@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">calc</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="strBtnAdd">더하기</string>
+    <string name="strBtnSub">빼기</string>
+    <string name="strBtnMul">곱하기</string>
+    <string name="strBtnDiv">나누기</string>
+    <string name="strBtnRem">나머지 값</string>
+    <string name="strResult">계산결과 : </string>
+
+</resources>
