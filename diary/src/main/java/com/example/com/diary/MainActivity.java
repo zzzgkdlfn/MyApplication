@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         edtDiary.setText(readDiary(fileName));
 
 
+
         dp.init(cYear, cMonth, cDay, new DatePicker.OnDateChangedListener() {
             @Override
             public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try{
+                    //일기 저장 External 로바꿔야함 폴더 mydiary에
                     FileOutputStream outFs = openFileOutput(fileName,0);
                     String str = edtDiary.getText().toString();
                     outFs.write(str.getBytes());
