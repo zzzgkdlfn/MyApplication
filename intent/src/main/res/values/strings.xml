@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">intent</string>
+
+    <string name="strResult">계산하기</string>
+    <string name="strReturn">돌아가기</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_second">second</string>
+</resources>
