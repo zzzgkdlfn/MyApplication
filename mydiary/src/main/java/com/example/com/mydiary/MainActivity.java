@@ -1,30 +1,27 @@
 package com.example.com.mydiary;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.location.GpsStatus;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Display;
-import android.view.Gravity;
+import android.os.Environment;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     DatePicker dp;
     TextView  textDate;
@@ -45,33 +42,30 @@ public class MainActivity extends AppCompatActivity {
 
         Calendar cal = Calendar.getInstance();
         int cYear = cal.get(Calendar.YEAR);
-        int cMonth = cal.get(Calendar.MONTH);
+        int cMonth = cal.get(Calendar.MONTH) ;
         int cDay = cal.get(Calendar.DAY_OF_MONTH);
 
 
-        textDate.setText(cYear + "년 " + cMonth + "월 " + cDay + "일 ");
-        fileName = Integer.toString(cYear) + "_" + Integer.toString(cMonth+1) + "_" + Integer.toString(cDay) + ".txt";
+        textDate.setText(cYear + "년 " + (cMonth+1) + "월 " + cDay + "일 ");
+        fileName = Integer.toString(cYear) + "년_" + Integer.toString(cMonth+1) + "월_" + Integer.toString(cDay) + "일.txt";
+
+        //처음에 해당날짜 일기 있으면 불러옴.
         edtDiary.setText(readDiary(fileName));
 
-//        dp.init(cYear, cMonth, cDay, new DatePicker.OnDateChangedListener() {
-//            @Override
-//            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-//
-//                fileName = Integer.toString(year) + "_" + Integer.toString(monthOfYear + 1) + "_" + Integer.toString(dayOfMonth) + ".txt";
-//                String str = readDiary(fileName);
-//                edtDiary.setText(str);
-//                btnWrite.setEnabled(true);
-//                textDate.setText(Integer.toString(year) + "년 " + Integer.toString(monthOfYear + 1) + "월 " + Integer.toString(dayOfMonth) + "일 ");
-//
-//            }
-//        });
 
         btnWrite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    //일기 저장 External 로바꿔야함 폴더 mydiary에
-                    FileOutputStream outFs = openFileOutput(fileName, 0);
+
+//                    FileOutputStream outFs = openFileOutput(fileName, 0);
+                    //외부저장소 저장 (미완성)
+                    String strSDpath = Environment.getExternalStorageDirectory().getAbsolutePath();
+                    File myDir = new File(strSDpath + "/mydiary");
+                    //다이어리 폴더가 없으면 생성
+                    myDir.mkdir();
+                    //mydiary 밑에 해당날짜 txt파일 저장
+                    FileOutputStream outFs = new FileOutputStream(strSDpath + "/mydiary/" + fileName);
                     String str = edtDiary.getText().toString();
                     outFs.write(str.getBytes());
                     Toast.makeText(getApplicationContext(), fileName + " 이 저장됨", Toast.LENGTH_SHORT).show();
@@ -100,10 +94,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
-                        fileName = Integer.toString(year) + "_" + Integer.toString(monthOfYear + 1) + "_" + Integer.toString(dayOfMonth) + ".txt";
-                        String str = readDiary(fileName);
-                        edtDiary.setText(str);
-                        btnWrite.setEnabled(true);
+                        fileName = Integer.toString(year) + "년_" + Integer.toString(monthOfYear + 1) + "월_" + Integer.toString(dayOfMonth) + "일.txt";
+//                        String str = readDiary(fileName);
+//                        edtDiary.setText(str);
+//                        btnWrite.setEnabled(true);
 //                        textDate.setText(Integer.toString(year) + "년 " + Integer.toString(monthOfYear + 1) + "월 " + Integer.toString(dayOfMonth) + "일 ");
 
                     }
@@ -112,6 +106,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String str = Integer.toString(dp.getYear()) + "년 " + Integer.toString(dp.getMonth()+1) + "월 " + Integer.toString(dp.getDayOfMonth()) + "일 ";
+                        String str1 = readDiary(fileName);
+                        edtDiary.setText(str1);
                         textDate.setText(str);
                     }
                 });
@@ -129,10 +125,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     String readDiary(String fName) {
+
+
+        //외부저장소
         String diaryStr = null;
         FileInputStream inFs;
+        String strSDpath = Environment.getExternalStorageDirectory().getAbsolutePath();
+
         try{
-            inFs = openFileInput(fName);
+            // mydiary밑에 파일이름 불러옴
+            inFs = new FileInputStream(strSDpath + "/mydiary/" + fName);
             byte[] txt = new byte[500];
             inFs.read(txt);
             inFs.close();
@@ -147,23 +149,41 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        super.onCreateOptionsMenu(menu);
+        MenuInflater  mInflater = getMenuInflater();
+        mInflater.inflate(R.menu.menu1, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch(item.getItemId()) {
+            case R.id.itemread:
+                readDiary(fileName);
+//                Toast.makeText(getApplicationContext(), fileName + " 파일 다시 읽어옴.", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.itemdelete:
+                AlertDialog.Builder dlg2 = new AlertDialog.Builder(MainActivity.this);
+                dlg2.setTitle("삭제");
+                dlg2.setMessage(fileName + "일기를 삭제하시겠습니까?");
+                //삭제했을때 리스너 작성
+                dlg2.setPositiveButton("확인", null);
+                dlg2.setNegativeButton("취소", null);
+                dlg2.show();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+                break;
+
+            //다이어리 내용을 버튼클릭에 따라 지정
+            case R.id.itemBig:
+                edtDiary.setTextSize(30);
+                break;
+            case R.id.itemNormal:
+                edtDiary.setTextSize(20);
+                break;
+            case R.id.itemSmall:
+                edtDiary.setTextSize(10);
+                break;
         }
-
-        return super.onOptionsItemSelected(item);
+       return false;
     }
 }

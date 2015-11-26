@@ -22,10 +22,6 @@ public class MainActivity extends AppCompatActivity {
 
         Button btnNewActivity = (Button) findViewById(R.id.btnNewActivity);
         final RadioGroup rGroup1 = (RadioGroup) findViewById(R.id.rGroup1);
-//        RadioButton rdoAdd = (RadioButton) findViewById(R.id.RdoAdd);
-//        RadioButton rdoSub = (RadioButton) findViewById(R.id.RdoSub);
-//        RadioButton rdoMul = (RadioButton) findViewById(R.id.RdoMul);
-//        RadioButton rdoDiv = (RadioButton) findViewById(R.id.RdoDiv);
 
         btnNewActivity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
                         intent.putExtra("Str","곱하기");
                         break;
                     case R.id.RdoDiv:
-                        intent.putExtra("Str","빼기");
+                        intent.putExtra("Str","나누기");
                         break;
                     default:
                         intent.putExtra("Str","");
@@ -63,11 +59,12 @@ public class MainActivity extends AppCompatActivity {
         if(resultCode == RESULT_OK) {
             Double hap = data.getDoubleExtra("Hap", 0);
             String error = data.getStringExtra("error");
-            if(error != null) {
-                Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+            if(error.equals("에러")) {
+                Toast.makeText(getApplicationContext(), "0으로 나눌수 없습니다.", Toast.LENGTH_SHORT).show();
             }
-            else
-            Toast.makeText(getApplicationContext(), "결과 :" + hap, Toast.LENGTH_SHORT).show();
+             else
+                Toast.makeText(getApplicationContext(), "결과 :" + hap, Toast.LENGTH_SHORT).show();
+
         }
     }
 }

@@ -28,6 +28,7 @@ public class second extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent outIntent = new Intent(getApplicationContext(), MainActivity.class);
+                int erck = 0;
                 switch(s) {
                     case "더하기":
                         res = Double.parseDouble(num1) + Double.parseDouble(num2);
@@ -40,37 +41,17 @@ public class second extends AppCompatActivity {
                         break;
                     case "나누기":
                         if(Double.parseDouble(num2)==0) {
-                            outIntent.putExtra("error","0으로 나눌수 없습니다.");
+                            outIntent.putExtra("error", "에러");
+                            erck =1;
                         }
                         res = Double.parseDouble(num1) / Double.parseDouble(num2);
                 }
                 outIntent.putExtra("Hap", res);
-//                outIntent.putExtra("Hap", hapValue);
+                if(erck==0) outIntent.putExtra("error","ok");
                 setResult(RESULT_OK, outIntent);
                 finish();
             }
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_second, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

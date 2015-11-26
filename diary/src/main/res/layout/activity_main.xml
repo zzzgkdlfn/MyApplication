@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/edtDiary"
         android:background="#00ff00"
-        android:lines="12"/>
+        android:lines="8"/>
 
     <Button
         android:layout_width="match_parent"
